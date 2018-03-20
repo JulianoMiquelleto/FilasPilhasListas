@@ -99,11 +99,12 @@ namespace AppListasFilasPilha
         }
         
     }
+
     public struct Curso
     {
         public int Id;
         public String Nome;
-        public int Vaga;
+        public Fila<T> vagas;
     }
 
     class Program
@@ -137,7 +138,77 @@ namespace AppListasFilasPilha
     }
 
     //Fila
+	public class Fila<T>
+	{
+	   readonly int tamanho; 
+	   int inicio = 0;
+	   int fim = 0;
+	   T[] itens; 
+
+	   public Fila(int size)
+	   {
+		  tamanho = size + 1;
+		  itens = new object[tamanho];
+	   }
+	   public void Emfileirar(T item)
+	   {
+		  int proximo = (fim+1%tamanho);
+		  if(next == inicio)  throw new StackOverflowException();       
+
+		  itens[fim] = item;
+		  fim = proximo;
+	   }
+	   public T Desenfileirar()
+	   {
+
+		  if(inicio == fim)
+		  {
+		     throw new InvalidOperationException("A pilha esta vazia");
+		  }
+		  else
+		  {
+		  	try {
+				return itens[inicio];
+			}
+	        finally
+        	{		  	
+				inicio = (inicio+1%tamanho);
+			}
+		  }
+	   }
+	}
 
     //Pilha
+	public class Pilha<T>
+	{
+	   readonly int tamanho; 
+	   int posicao = 0;
+	   T[] itens; 
 
+	   public Pilha(int size)
+	   {
+		  tamanho = size;
+		  itens = new T[tamanho];
+	   }
+	   public void Empilhar(T item)
+	   {
+		  if(posicao >= tamanho)  throw new StackOverflowException();       
+
+		  itens[posicao] = item;
+		  posicao++;
+	   }
+	   public T Desempilhar()
+	   {
+		  posicao--;
+		  if(posicao >= 0)
+		  {
+		     return itens[posicao];
+		  }
+		  else
+		  {
+		     posicao = 0;
+		     throw new InvalidOperationException("A pilha esta vazia");
+		  }
+	   }
+	}
 }
