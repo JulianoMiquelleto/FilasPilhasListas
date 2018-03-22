@@ -8,156 +8,164 @@ namespace AppListasFilasPilha
 {
     public struct Candidato
     {
-        public int Chave;
+        public string Nome;
         public decimal NotaFinal;
         public int[] OpcaoCurso;
 
-        public Candidato(int chave, decimal nota, int[] opcoes)
+        public Candidato(string nome, decimal nota, int[] opcoes)
         {
-            Chave = chave;
+            Nome = nome;
             NotaFinal = nota;
             OpcaoCurso = opcoes;
         }
-        public void Add(Candidato[] lista)
-        {
-            for (int i = 0; i < lista.Length; i++)
-            {
-                if (lista[i].Chave.Equals(0))
-                {
-                    lista[i] = this;
-                    break;
-                }
-            }
-        }
-        public void Remove(Candidato[] lista)
-        {
-            for (int i = lista.Length; i > 0; i--)
-            {
-                if (lista[i].Chave != 0)
-                {
-                    lista[i].Chave = 0;
-                    lista[i].NotaFinal = 0;
-                    lista[i].OpcaoCurso = new int[]{};
-                    break;
-                }
-            }
-        }
-
-        public void RemoveIndex(Candidato[] lista, int index)
-        {
-            lista[index].Chave = 0;
-            lista[index].NotaFinal = 0;
-            lista[index].OpcaoCurso = new int[] { };    
-        }
-
-        public void ChangeIndex(Candidato[] lista, int index,int indexNew)
-        {
-            lista[indexNew].Chave = lista[index].Chave;
-            lista[indexNew].NotaFinal = lista[index].NotaFinal;
-            lista[indexNew].OpcaoCurso = lista[index].OpcaoCurso;
-        }
-
-        public Candidato[] OrdenaNotas(Candidato[] lista,string direction)
-        {
-            
-            Candidato[] listaAux = new Candidato[lista.Length];
-            if (lista.Length > 1)
-            {
-                for (int i = 0; i < lista.Length; i++)
-                {
-                    int index = i;
-                    decimal maxNota = lista[index].NotaFinal;
-                    for (int j = i + 1; j < lista.Length; j++)
-                    {
-                        if (lista.Length >= j)
-                        {
-                            if (direction == "DESC")
-                            {
-                                if (maxNota < lista[j].NotaFinal)
-                                {
-                                    maxNota = lista[j].NotaFinal;
-                                    index = j;
-                                }
-                            }
-                            else
-                            {
-                                if (maxNota > lista[j].NotaFinal)
-                                {
-                                    maxNota = lista[j].NotaFinal;
-                                    index = j;
-                                }
-                            }
-                        }
-                    }
-                    lista[index].Add(listaAux);
-                    lista[index].ChangeIndex(lista,i,index);
-                   
-                }
-            }
-            return listaAux;
-
-        }
-        
     }
 
     public struct Curso
     {
         public int Id;
         public String Nome;
-        public Fila<T> vagas;
+        public Pilha<Candidato> Candidatos;
+
+        public Curso(int id, int nunVagas)
+        {
+            Id = id;
+            Candidatos = new Pilha<Candidato>(Vagas);
+        }
+
+        static public void OrdenaNotas(Candidato[] lista, string direction) {
+          Candidato aux;
+          for (int i = 0; i < lista.Length; i++)
+          {
+              for (int j = i + 1; j < lista.Length; j++)
+              {
+                  bool change = false;
+                  if (direction == "DESC") {
+                      if (list[i].NotaFinal < list[j].NotaFinal)
+                        change = true;
+                  } else
+                    if (list[i].NotaFinal > list[j].NotaFinal)
+                      change = true;
+
+                  if (change) {
+                    aux = list[i];
+                    list[i] = list[j];
+                    list[j] = aux;
+                  }
+              }
+          }
+        }
     }
 
     class Program
     {
+        static Candidato[] lerCsv() {
+          //TODO::lerCsv
+
+          //cria lista com capacidade de 10 canditados
+          Candidato[] lista = new Candidato[5];
+
+          //carrega candidatos
+          lista[0] = new Candidato("1",9, new int[] {1,2,3 }));
+          lista[1] = new Candidato("2", 7, new int[] { 1, 3, 4 }));
+          lista[2] = new Candidato("3", 5, new int[] { 4, 1, 2 }));
+          lista[3] = new Candidato("4", 10, new int[] { 4, 1, 2 }));
+          lista[4] = new Candidato("5", 9, new int[] { 4, 5, 3 }));
+        }
+
         static void Main(string[] args)
         {
-            //cria lista com capacidade de 10 canditados
-            Candidato[] lista = new Candidato[5];
-           
-            //carrega candidatos
-            Candidato c1 = new Candidato(1,9, new int[] {1,2,3 });
-            Candidato c2 = new Candidato(2, 7, new int[] { 1, 2, 4 });
-            Candidato c3 = new Candidato(3, 5, new int[] { 2, 2, 4 });
-            Candidato c4 = new Candidato(4, 10, new int[] { 4, 1, 2 });
-            Candidato c5 = new Candidato(5, 9, new int[] { 4, 5, 3 });
-            c1.Add(lista);
-            c2.Add(lista);
-            c3.Add(lista);
-            c4.Add(lista);
-            c5.Add(lista);
+            int numVagas = 2;
 
-           Candidato[] listaOdenada =   c5.OrdenaNotas(lista,"DESC");
-
-            foreach (var item in listaOdenada)
+            //Criar os cursos
+            Curso[] cursos = new Curso[7];
+            for (int j = 0; j < cursos.Length; j++)
             {
-                Console.WriteLine(item.NotaFinal);
+              cursos = new Cursos(j, numVagas);
             }
-            Console.Read();
+
+            //Carrega os candidatos
+            Candidato[] candidatos = lerCsv();
+
+            //Ordena candidatos pela maior nota e adiciona na fila para inscrições nos cursos
+            Curso.OrdenaNotas(candidatos,"DESC");
+            Fila<Candidato> incricoes = new Fila<Candidato>( candidatos );
+
+            //Enquanto possuir inscrições procura pelas vagas
+            while(!incricoes.empty())
+            {
+                Candidato candidato = inscricoes.Desenfileirar();
+                //Percorre as opções de cursos
+                foreach(int opcaoCurso in candidato.OpcaoCurso)
+                {
+                  //Para não gerar exceção verifica se existe o curso
+                  if (cursos.Length < opcaoCurso) {
+                    Console.WriteLine("Opção de curso " + opcaoCurso + " para o candidato " + candidato.Chave + " inexistente.");
+                    continue;
+                  }
+                  //Tenta empilhar o candidato no curso desejado, se não der estouro de pilha a vaga existe, do contrario tenta outro curso
+                  try {
+                    cursos[opcaoCurso].Candidatos.Empilhar(candidato);
+                    Console.WriteLine("Candidato " + candidato.Chave + " adicionado ao curso " +opcaoCurso);
+                  } catch (StackOverflowException soe) {
+                    Console.WriteLine("Curso " + opcaoCurso + " lotato. Verificando outra vaga para o candidato " + candidato.Chave);
+                  }
+                }
+
+            }
+
+            //Mostra os Canditados nos cursos
+            for (int j = 0; j < cursos.Length; j++)
+            {
+              Console.WriteLine("--------------------------------");
+              Console.WriteLine("Candidatos e suas notas inscritos no curso " + curso.Id);
+              Console.WriteLine("--------------------------------");
+              while(!cursos[j].Candidatos.empty())
+              {
+                Candidato candidato = cursos[j].Candidatos.Desempilhar();
+
+                Console.Write("candidato:" + candidato.Chave + " nota:" + candidato.NotaFinal + " , ");
+              }
+              Console.WriteLine("--------------------------------");
+            }
 
         }
     }
 
-    //Fila
+  //Fila
 	public class Fila<T>
 	{
-	   readonly int tamanho; 
+	   readonly int tamanho;
 	   int inicio = 0;
 	   int fim = 0;
-	   T[] itens; 
+	   T[] itens;
 
 	   public Fila(int size)
 	   {
 		  tamanho = size + 1;
 		  itens = new object[tamanho];
 	   }
+
+     public Fila(T[] itens)
+	   {
+      fim = itens.Length;
+		  tamanho = itens.Length + 1;
+		  itens = itens;
+	   }
+
+     public boolean empty()
+     {
+       return inicio == fim;
+     }
+
 	   public void Emfileirar(T item)
 	   {
 		  int proximo = (fim+1%tamanho);
-		  if(next == inicio)  throw new StackOverflowException();       
+		  if(next == inicio)  throw new StackOverflowException();
 
 		  itens[fim] = item;
 		  fim = proximo;
 	   }
+
 	   public T Desenfileirar()
 	   {
 
@@ -171,7 +179,7 @@ namespace AppListasFilasPilha
 				return itens[inicio];
 			}
 	        finally
-        	{		  	
+        	{
 				inicio = (inicio+1%tamanho);
 			}
 		  }
@@ -181,18 +189,22 @@ namespace AppListasFilasPilha
     //Pilha
 	public class Pilha<T>
 	{
-	   readonly int tamanho; 
+	   readonly int tamanho;
 	   int posicao = 0;
-	   T[] itens; 
+	   T[] itens;
 
 	   public Pilha(int size)
 	   {
 		  tamanho = size;
 		  itens = new T[tamanho];
 	   }
+     public boolean empty()
+     {
+       return posicao > 0;
+     }
 	   public void Empilhar(T item)
 	   {
-		  if(posicao >= tamanho)  throw new StackOverflowException();       
+		  if(posicao >= tamanho)  throw new StackOverflowException();
 
 		  itens[posicao] = item;
 		  posicao++;
