@@ -65,11 +65,11 @@ namespace AppListasFilasPilha
           Candidato[] lista = new Candidato[5];
 
           //carrega candidatos
-          lista[0] = new Candidato("1",9, new int[] {1,2,3 }));
-          lista[1] = new Candidato("2", 7, new int[] { 1, 3, 4 }));
-          lista[2] = new Candidato("3", 5, new int[] { 4, 1, 2 }));
+          lista[0] = new Candidato("1", 9,  new int[] { 1,2,3 }));
+          lista[1] = new Candidato("2", 7,  new int[] { 1, 3, 4 }));
+          lista[2] = new Candidato("3", 5,  new int[] { 4, 1, 2 }));
           lista[3] = new Candidato("4", 10, new int[] { 4, 1, 2 }));
-          lista[4] = new Candidato("5", 9, new int[] { 4, 5, 3 }));
+          lista[4] = new Candidato("5", 9,  new int[] { 4, 5, 3 }));
         }
 
         static void Main(string[] args)
@@ -136,46 +136,50 @@ namespace AppListasFilasPilha
 	{
 	   readonly int tamanho;
 	   int inicio = 0;
-	   int fim = 0;
+	   int fim = -1;
+	   int tamanhoFila = 0;
 	   T[] itens;
 
 	   public Fila(int size)
 	   {
-		  tamanho = size + 1;
-		  itens = new object[tamanho];
+		  tamanho = size;
+		  itens = new T[tamanho];
 	   }
 
-     public Fila(T[] itens)
+       public Fila(T[] itens)
 	   {
-      fim = itens.Length;
-		  tamanho = itens.Length + 1;
+		  fim =
+		  tamanhoFila =
+		  tamanho = itens.Length;
+		  
 		  itens = itens;
 	   }
 
-     public boolean empty()
-     {
-       return inicio == fim;
-     }
+       public boolean empty()
+       {
+         return tamanho == 0;
+       }
 
 	   public void Emfileirar(T item)
 	   {
-		  int proximo = (fim+1%tamanho);
-		  if(next == inicio)  throw new StackOverflowException();
+		  if((tamanhoFila + 1) > tamanho)  throw new StackOverflowException();
 
+		  int fim = (fim+1%tamanho);
 		  itens[fim] = item;
-		  fim = proximo;
+		  tamanhoFila++;
 	   }
 
 	   public T Desenfileirar()
 	   {
 
-		  if(inicio == fim)
+		  if(tamanhoFila - 1 < 0)
 		  {
 		     throw new InvalidOperationException("A pilha esta vazia");
 		  }
 		  else
 		  {
 		  	try {
+			  	tamanhoFila--;
 				return itens[inicio];
 			}
 	        finally
